@@ -18,7 +18,9 @@ interface ILotteryServiceManager {
     // FUNCTIONS
     // NOTE: this function creates new task.
     function createNewTask(
-        string memory name
+        uint32 lotteryId,
+        string calldata lotteryAddress,
+        string[] calldata allowedYieldProtocols
     ) external;
 
     // NOTE: this function is called by operators to respond to a task.

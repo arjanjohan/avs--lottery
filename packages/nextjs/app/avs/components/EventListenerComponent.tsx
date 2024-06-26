@@ -17,14 +17,14 @@ const EventListenerComponent: React.FC = () => {
   const ITEMS_PER_PAGE = 5; // This should match the ITEMS_PER_PAGE from the PaginationButton component
 
   const { data: events, error: eventsError } = useScaffoldEventHistory({
-    contractName: "HelloWorldServiceManager",
+    contractName: "LotteryServiceManager",
     eventName: "NewTaskCreated",
     fromBlock: 100n,
     watch: watchEvents,
   });
 
   const { data: helloWorldServiceManagerContract } = useScaffoldContract({
-    contractName: "HelloWorldServiceManager",
+    contractName: "LotteryServiceManager",
   });
 
   useEffect(() => {
@@ -49,7 +49,9 @@ const EventListenerComponent: React.FC = () => {
 
   const handleActionClick = (event: Event) => {
     setTask({
-      taskName: event.args.task.name,
+      lotteryId: event.args.task.lotteryId,
+      lotteryAddress: event.args.task.lotteryAddress,
+      yieldProtocol: "",
       taskIndex: event.args.taskIndex,
       taskCreatedBlock: event.args.task.taskCreatedBlock,
     });

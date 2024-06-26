@@ -9,20 +9,17 @@ import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
 
 const RespondToTaskComponent: React.FC = () => {
   const { task } = useTask();
-  const [taskName, setTaskName] = useState<string>(task.taskName);
+  const [lotteryId, setLotteryId] = useState<number>(task.lotteryId);
+  const [lotteryAddress, setLotteryAddress] = useState<string>(task.lotteryAddress);
   const [taskIndex, setTaskIndex] = useState<number>(task.taskIndex);
   const [taskCreatedBlock, setTaskCreatedBlock] = useState<number>(task.taskCreatedBlock);
-  const [messageToSign, setMessageToSign] = useState<string>("");
+  const [yieldProtocol, setYieldProtocol] = useState<string>("");
 
   useEffect(() => {
-    setTaskName(task.taskName);
+    setLotteryId(task.lotteryId);
+    setLotteryAddress(task.lotteryAddress);
     setTaskIndex(task.taskIndex);
     setTaskCreatedBlock(task.taskCreatedBlock);
-    if (task.taskName) {
-      setMessageToSign(`Hello, ${task.taskName}`);
-    } else {
-      setMessageToSign("");
-    }
   }, [task]);
 
   const { chain } = useAccount();
@@ -33,8 +30,9 @@ const RespondToTaskComponent: React.FC = () => {
   const writeDisabled = !chain || chain?.id !== targetNetwork.id;
 
   const handleRespondToTask = async () => {
+    // TODO: check if all fields are filled and throw msg if not
     try {
-      const message = `Hello, ${taskName}`;
+      // const message = `Hello, ${taskName}`;
       const messageHashBytes = getBytes(keccak256(toUtf8Bytes(message)));
       const signature = await signMessageAsync({ message: {raw: messageHashBytes} });
 
@@ -52,7 +50,8 @@ const RespondToTaskComponent: React.FC = () => {
 
   return (
     <div>
-      <StyledInput type="text" value={taskName} onChange={e => setTaskName(e.target.value)} name="Task Name" />
+      <StyledInput type="number" value={lotteryId} onChange={e => setLotteryId(Number(e.target.value))} name="Lottery Id" />
+      <StyledInput type="text" value={lotteryAddress} onChange={e => setLotteryAddress(e.target.value)} name="Lottery Address" />
 
       <StyledInput
         type="number"
@@ -70,9 +69,9 @@ const RespondToTaskComponent: React.FC = () => {
 
       <StyledInput
         type="text"
-        value={messageToSign}
-        onChange={e => setMessageToSign(e.target.value)}
-        name="Message to sign"
+        value={yieldProtocol}
+        onChange={e => setYieldProtocol(e.target.value)}
+        name="Yield protocol used"
       />
 
       <StyledButton
@@ -85,16 +84,6 @@ const RespondToTaskComponent: React.FC = () => {
         Respond to Task
       </StyledButton>
 
-      {/* <div className="mt-5 justify-end flex gap-3 mx-5">
-        <span className="self-center text-primary-content font-medium">Auto response</span>
-        <input
-          type="checkbox"
-          // checked={watchEvents}
-          // onChange={() => setWatchEvents(!watchEvents)}
-          className="toggle toggle-accent"
-        />
-      </div>
-      <StyledInput type="text" value={privateKey} onChange={e => setPrivateKey(e.target.value)} name="Private Key" /> */}
     </div>
   );
 };

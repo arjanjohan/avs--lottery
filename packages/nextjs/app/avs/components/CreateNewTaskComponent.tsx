@@ -20,15 +20,16 @@ function generateRandomName(): string {
   return randomName;
 }
 
-// TODO: Remove hardcoded chainid
-const avsContractAddress = externalContracts[31337].HelloWorldServiceManager.address;
-const abi = externalContracts[31337].HelloWorldServiceManager.abi;
+const avsContractAddress = deployedContracts[31337].LotteryServiceManager.address;
+const abi = deployedContracts[31337].LotteryServiceManager.abi;
 
 const CreateNewTaskComponent: React.FC = () => {
-  const [taskName, setTaskName] = useState<string>("");
+  const [lotteryId, setLotteryId] = useState<number>(0);
+  const [lotteryAddress, setLotteryAddress] = useState<string>("");
+  const [allowedYieldProtocols, setAllowedYieldProtocols] = useState<string[]>([]);  
   const [spamTasks, setSpamTasks] = useState<boolean>(false);
   const [privateKey, setPrivateKey] = useState<string>("");
-  const { writeContractAsync: createNewTask, isPending } = useScaffoldWriteContract("HelloWorldServiceManager");
+  const { writeContractAsync: createNewTask, isPending } = useScaffoldWriteContract("LotteryServiceManager");
   const { chain } = useAccount();
   const { targetNetwork } = useTargetNetwork();
 
@@ -39,7 +40,7 @@ const CreateNewTaskComponent: React.FC = () => {
       console.log("Creating task...");
       await createNewTask({
         functionName: "createNewTask",
-        args: [taskName],
+        args: [lotteryId, lotteryAddress, allowedYieldProtocols],
       });
       console.log("Task created successfully");
     } catch (error) {
@@ -91,24 +92,28 @@ const CreateNewTaskComponent: React.FC = () => {
 
   return (
     <div>
-      <div className="flex items-start mb-4 space-x-4">
-        <div className="flex flex-col items-center w-20">
-          <span className="text-xs font-medium mb-1 leading-none">Spam tasks</span>
-          <input
-            type="checkbox"
-            checked={spamTasks}
-            onChange={() => setSpamTasks(!spamTasks)}
-            className="toggle toggle-primary bg-primary hover:bg-primary border-primary"
-          />
-        </div>
-        <StyledInput type="text" value={privateKey} onChange={e => setPrivateKey(e.target.value)} name="Private Key" />
-      </div>
+      
+
 
       <StyledInput
+        type="number"
+        value={lotteryId}
+        onChange={e => setLotteryId(Number(e.target.value))}
+        name="Lottery ID"
+        disabled={spamTasks}
+      />
+      <StyledInput
         type="text"
-        value={taskName}
-        onChange={e => setTaskName(e.target.value)}
-        name="Task Name"
+        value={lotteryAddress}
+        onChange={e => setLotteryAddress(e.target.value)}
+        name="Lottery Address"
+        disabled={spamTasks}
+      />
+      <StyledInput
+        type="text"
+        value={allowedYieldProtocols.join(',')}
+        onChange={e => setAllowedYieldProtocols(e.target.value.split(','))}
+        name="Allowed Yield Protocols (comma separated)"
         disabled={spamTasks}
       />
 

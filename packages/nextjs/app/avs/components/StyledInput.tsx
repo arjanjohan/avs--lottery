@@ -11,8 +11,8 @@ interface StyledInputProps {
 const StyledInput: React.FC<StyledInputProps> = ({ type, value, onChange, name, disabled }) => {
   return (
     <div className="flex flex-col gap-1.5 w-full">
-      <div className="flex items-center ml-2">
-        <span className="text-xs font-medium mr-2 leading-none">{name}</span>
+      <div className="flex items-center mt-2 ml-2">
+        <span className="block text-xs font-extralight leading-none">{name}</span>
       </div>
       <div className={"flex border-2 border-base-300 bg-base-200 rounded-full text-accent"}>
         <input

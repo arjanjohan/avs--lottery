@@ -1,7 +1,9 @@
 import React, { ReactNode, createContext, useContext, useState } from "react";
 
 interface Task {
-  taskName: string;
+  lotteryId: number;
+  lotteryAddress: string;
+  yieldProtocol: string;
   taskIndex: number;
   taskCreatedBlock: number;
 }

@@ -64,8 +64,8 @@ contract LotteryServiceManager is
     // NOTE: this function creates new task, assigns it a taskId
     function createNewTask(
         uint32 lotteryId,
-        string lotteryAddress,
-        string[] allowedYieldProtocols
+        string calldata lotteryAddress,
+        string[] calldata allowedYieldProtocols
     ) external {
         // create a new task struct
         Task memory newTask;
@@ -101,14 +101,14 @@ contract LotteryServiceManager is
             allTaskResponses[msg.sender][referenceTaskIndex].length == 0,
             "Operator has already responded to the task"
         );
-
+        address signer = address(0);
         for (uint256 i = 0; i < task.allowedYieldProtocols.length; i++) {
             // The message that was signed
-            bytes32 messageHash = keccak256(abi.encodePacked("Hello, ", task.name));
+            bytes32 messageHash = keccak256(abi.encodePacked(task.allowedYieldProtocols[i]));
             bytes32 ethSignedMessageHash = messageHash.toEthSignedMessageHash();
 
             // Recover the signer address from the signature
-            address signer = ethSignedMessageHash.recover(signature);
+            signer = ethSignedMessageHash.recover(signature);
             if (signer == msg.sender) {
                 break;
             }

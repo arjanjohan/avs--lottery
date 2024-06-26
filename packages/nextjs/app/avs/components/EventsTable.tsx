@@ -26,7 +26,9 @@ const EventsTable: React.FC<EventsTableProps> = ({ events, responseStatuses, han
           <thead>
             <tr className="rounded-xl text-sm text-base-content">
               <th className="bg-primary">Index</th>
-              <th className="bg-primary">Name</th>
+              <th className="bg-primary">Lottery Id</th>
+              <th className="bg-primary">lottery Address</th>
+
               <th className="bg-primary">Block</th>
               <th className="bg-primary">Response</th>
             </tr>
@@ -59,7 +61,8 @@ const EventsTableRow: React.FC<EventsTableRowProps> = ({ event, index, handleAct
   return (
     <tr key={index} className="hover text-sm">
       <td className="w-1/12 md:py-4">{event.args.taskIndex}</td>
-      <td className="w-3/12 md:py-4">{event.args.task.name}</td>
+      <td className="w-3/12 md:py-4">{event.args.task.lotteryId}</td>
+      <td className="w-3/12 md:py-4">{event.args.task.lotteryAddress}</td>
       <td className="w-1/12 md:py-4">{event.args.task.taskCreatedBlock}</td>
       <td className="w-2/12 md:py-4">
         <button className="btn btn-accent btn-sm" onClick={() => handleActionClick(event)} disabled={responseStatus}>

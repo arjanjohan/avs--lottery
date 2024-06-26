@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import {HelloWorldServiceManager, IServiceManager} from "../contracts/HelloWorldServiceManager.sol";
+import {LotteryServiceManager, IServiceManager} from "../contracts/LotteryServiceManager.sol";
 
 import "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
 import "@eigenlayer/contracts/permissions/PauserRegistry.sol";
@@ -34,8 +34,8 @@ contract DeployScript is ScaffoldETHDeploy, Utils {
     ECDSAStakeRegistry public stakeRegistryProxy;
     ECDSAStakeRegistry public stakeRegistryImplementation;
 
-    HelloWorldServiceManager public helloWorldServiceManagerProxy;
-    HelloWorldServiceManager public helloWorldServiceManagerImplementation;
+    LotteryServiceManager public helloWorldServiceManagerProxy;
+    LotteryServiceManager public helloWorldServiceManagerImplementation;
 
     function run() external {
         uint256 deployerPrivateKey = setupLocalhostEnv();
@@ -182,7 +182,7 @@ contract DeployScript is ScaffoldETHDeploy, Utils {
          * First, deploy upgradeable proxy contracts that **will point** to the implementations. Since the implementation contracts are
          * not yet deployed, we give these proxies an empty contract as the initial implementation, to act as if they have no code.
          */
-        helloWorldServiceManagerProxy = HelloWorldServiceManager(
+        helloWorldServiceManagerProxy = LotteryServiceManager(
             address(
                 new TransparentUpgradeableProxy(
                     address(emptyContract),
@@ -244,7 +244,7 @@ contract DeployScript is ScaffoldETHDeploy, Utils {
             );
         }
 
-        helloWorldServiceManagerImplementation = new HelloWorldServiceManager(
+        helloWorldServiceManagerImplementation = new LotteryServiceManager(
             address(avsDirectory),
             address(stakeRegistryProxy),
             address(delegationManager)
