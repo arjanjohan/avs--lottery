@@ -8,15 +8,15 @@ import "@eigenlayer-middleware/src/unaudited/ECDSAStakeRegistry.sol";
 import "@openzeppelin-upgrades/contracts/utils/cryptography/ECDSAUpgradeable.sol";
 import "@eigenlayer/contracts/permissions/Pausable.sol";
 import {IRegistryCoordinator} from "@eigenlayer-middleware/src/interfaces/IRegistryCoordinator.sol";
-import "./IHelloWorldServiceManager.sol";
+import "./ILotteryServiceManager.sol";
 
 /**
- * @title Primary entrypoint for procuring services from HelloWorld.
- * @author Eigen Labs, Inc.
+ * @title Primary entrypoint for procuring services from Lottery.
+ * @author arjanjohan
  */
-contract HelloWorldServiceManager is 
+contract LotteryServiceManager is 
     ECDSAServiceManagerBase,
-    IHelloWorldServiceManager,
+    ILotteryServiceManager,
     Pausable
 {
     using BytesLib for bytes;
@@ -54,7 +54,7 @@ contract HelloWorldServiceManager is
         ECDSAServiceManagerBase(
             _avsDirectory,
             _stakeRegistry,
-            address(0), // hello-world doesn't need to deal with payments
+            address(0),
             _delegationManager
         )
     {}
@@ -63,11 +63,15 @@ contract HelloWorldServiceManager is
     /* FUNCTIONS */
     // NOTE: this function creates new task, assigns it a taskId
     function createNewTask(
-        string memory name
+        uint32 lotteryId,
+        string lotteryAddress,
+        string[] allowedYieldProtocols
     ) external {
         // create a new task struct
         Task memory newTask;
-        newTask.name = name;
+        newTask.lotteryId = lotteryId;
+        newTask.lotteryAddress = lotteryAddress;
+        newTask.allowedYieldProtocols = allowedYieldProtocols;
         newTask.taskCreatedBlock = uint32(block.number);
 
         // store hash of task onchain, emit event, and increase taskNum
@@ -98,14 +102,20 @@ contract HelloWorldServiceManager is
             "Operator has already responded to the task"
         );
 
-        // The message that was signed
-        bytes32 messageHash = keccak256(abi.encodePacked("Hello, ", task.name));
-        bytes32 ethSignedMessageHash = messageHash.toEthSignedMessageHash();
+        for (uint256 i = 0; i < task.allowedYieldProtocols.length; i++) {
+            // The message that was signed
+            bytes32 messageHash = keccak256(abi.encodePacked("Hello, ", task.name));
+            bytes32 ethSignedMessageHash = messageHash.toEthSignedMessageHash();
 
-        // Recover the signer address from the signature
-        address signer = ethSignedMessageHash.recover(signature);
+            // Recover the signer address from the signature
+            address signer = ethSignedMessageHash.recover(signature);
+            if (signer == msg.sender) {
+                break;
+            }
 
-        require(signer == msg.sender, "Message signer is not operator");
+        }
+
+        require(signer == msg.sender, "Unknown Yield Protocol specified");
 
         // updating the storage with task responsea
         allTaskResponses[msg.sender][referenceTaskIndex] = signature;

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
-interface IHelloWorldServiceManager {
+interface ILotteryServiceManager {
     // EVENTS
     event NewTaskCreated(uint32 indexed taskIndex, Task task);
 
@@ -9,7 +9,9 @@ interface IHelloWorldServiceManager {
 
     // STRUCTS
     struct Task {
-        string name;
+        uint32 lotteryId;
+        string lotteryAddress;
+        string[] allowedYieldProtocols;
         uint32 taskCreatedBlock;
     }
 
