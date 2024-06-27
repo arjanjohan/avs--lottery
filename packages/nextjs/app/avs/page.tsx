@@ -39,7 +39,7 @@ const AvsDashboardPage: NextPage = () => {
                   </div>
                 </div>
                 <div className="p-5 divide-y divide-base-300">
-                  {/* <EventListenerComponent /> */}
+                  <EventListenerComponent />
                 </div>
               </div>
             </div>

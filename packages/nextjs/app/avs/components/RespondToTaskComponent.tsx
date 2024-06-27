@@ -13,6 +13,7 @@ const RespondToTaskComponent: React.FC = () => {
   const [lotteryAddress, setLotteryAddress] = useState<string>(task.lotteryAddress);
   const [taskIndex, setTaskIndex] = useState<number>(task.taskIndex);
   const [taskCreatedBlock, setTaskCreatedBlock] = useState<number>(task.taskCreatedBlock);
+  const [allowedYieldProtocols, setAllowedYieldProtocols] = useState<string[]>(task.allowedYieldProtocols); // TODO: make sure to transform this to an array of strings
   const [yieldProtocol, setYieldProtocol] = useState<string>("");
 
   useEffect(() => {
@@ -37,7 +38,7 @@ const RespondToTaskComponent: React.FC = () => {
     }
 
     try {
-      // const message = `Hello, ${taskName}`;
+      const message = yieldProtocol;
       const messageHashBytes = getBytes(keccak256(toUtf8Bytes(message)));
       const signature = await signMessageAsync({ message: { raw: messageHashBytes } });
 
@@ -45,8 +46,7 @@ const RespondToTaskComponent: React.FC = () => {
 
       await respondToTask({
         functionName: "respondToTask",
-        args: [{ name: taskName, taskCreatedBlock: taskCreatedBlock }, taskIndex, signature],
-      });
+        args: [{ lotteryId: lotteryId, lotteryAddress: lotteryAddress, allowedYieldProtocols: allowedYieldProtocols, taskCreatedBlock: taskCreatedBlock }, taskIndex, signature],      });
       console.log("Task responded to successfully");
     } catch (error) {
       console.error("Error responding to task:", error);
