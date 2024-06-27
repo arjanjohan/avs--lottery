@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useTask } from "../context/TaskContext";
-import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
+import React from "react";
+
 
 type Event = {
   args: {
     taskIndex: number;
     task: {
-      name: string;
       taskCreatedBlock: number;
+      lotteryId: number;
+      lotteryAddress: string;
     };
   };
 };
@@ -16,6 +16,10 @@ type EventsTableProps = {
   events: Event[];
   responseStatuses: { [key: number]: boolean };
   handleActionClick: (event: Event) => void;
+};
+
+const formatAddress = (address: string) => {
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
 };
 
 const EventsTable: React.FC<EventsTableProps> = ({ events, responseStatuses, handleActionClick }) => {
@@ -62,7 +66,7 @@ const EventsTableRow: React.FC<EventsTableRowProps> = ({ event, index, handleAct
     <tr key={index} className="hover text-sm">
       <td className="w-1/12 md:py-4">{event.args.taskIndex}</td>
       <td className="w-3/12 md:py-4">{event.args.task.lotteryId}</td>
-      <td className="w-3/12 md:py-4">{event.args.task.lotteryAddress}</td>
+      <td className="w-3/12 md:py-4">{formatAddress(event.args.task.lotteryAddress)}</td>
       <td className="w-1/12 md:py-4">{event.args.task.taskCreatedBlock}</td>
       <td className="w-2/12 md:py-4">
         <button className="btn btn-accent btn-sm" onClick={() => handleActionClick(event)} disabled={responseStatus}>

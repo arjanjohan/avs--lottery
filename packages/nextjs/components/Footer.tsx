@@ -37,7 +37,7 @@ export const Footer = () => {
         <ul className="menu menu-horizontal w-full">
           <div className="flex justify-center items-center gap-2 text-sm w-full">
             <div className="text-center">
-              <a href="https://github.com/arjanjohan/scaffold-avs" target="_blank" rel="noreferrer" className="link">
+              <a href="https://github.com/arjanjohan/avs-lottery" target="_blank" rel="noreferrer" className="link">
                 Fork me
               </a>
             </div>
@@ -57,11 +57,7 @@ export const Footer = () => {
               </a>
             </div>
             <span>·</span>
-            <div className="text-center">
-              <a href="https://t.me/arjanjohan" target="_blank" rel="noreferrer" className="link">
-                Support
-              </a>
-            </div>
+            
           </div>
         </ul>
       </div>

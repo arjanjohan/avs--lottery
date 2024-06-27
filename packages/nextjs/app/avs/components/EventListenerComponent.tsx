@@ -19,7 +19,7 @@ const EventListenerComponent: React.FC = () => {
   const { data: events, error: eventsError } = useScaffoldEventHistory({
     contractName: "LotteryServiceManager",
     eventName: "NewTaskCreated",
-    fromBlock: 1800000n,
+    fromBlock: 1818000n,
     watch: watchEvents,
   });
 
