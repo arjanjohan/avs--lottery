@@ -20,8 +20,8 @@ function generateRandomName(): string {
   return randomName;
 }
 
-const avsContractAddress = deployedContracts[31337].LotteryServiceManager.address;
-const abi = deployedContracts[31337].LotteryServiceManager.abi;
+const avsContractAddress = deployedContracts[17000].LotteryServiceManager.address;
+const abi = deployedContracts[17000].LotteryServiceManager.abi;
 
 const CreateNewTaskComponent: React.FC = () => {
   const [lotteryId, setLotteryId] = useState<number>(0);

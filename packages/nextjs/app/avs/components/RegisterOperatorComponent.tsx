@@ -7,7 +7,7 @@ import externalContracts from "~~/contracts/externalContracts";
 import deployedContracts from "~~/contracts/deployedContracts";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
-const HelloWorldServiceManagerAddress = externalContracts[31337].HelloWorldServiceManager.address; // deployed address
+const LotteryServiceManagerAddress = deployedContracts[17000].LotteryServiceManager.address; // deployed address
 
 // TODO: remove hardcoded values for testing purposes
 const salt = "0xe2db5b2ccfdfef2a650cc1974253e1d8f6438e7462944aa8ff77f50ffa4144ce" as `0x${string}`;
@@ -39,7 +39,7 @@ const RegisterOperatorComponent: React.FC = () => {
   const { data: digestHash, isLoading: isDigestHashLoading } = useScaffoldReadContract({
     contractName: "AVSDirectory",
     functionName: "calculateOperatorAVSRegistrationDigestHash",
-    args: [address, HelloWorldServiceManagerAddress, salt, expiry], // Example expiry
+    args: [address, LotteryServiceManagerAddress, salt, expiry], // Example expiry
   });
 
   const registerOperatorEigenlayer = async () => {

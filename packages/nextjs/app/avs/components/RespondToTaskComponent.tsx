@@ -30,11 +30,16 @@ const RespondToTaskComponent: React.FC = () => {
   const writeDisabled = !chain || chain?.id !== targetNetwork.id;
 
   const handleRespondToTask = async () => {
-    // TODO: check if all fields are filled and throw msg if not
+    // Check if all fields are filled
+    if (!lotteryId || !lotteryAddress || !taskIndex || !taskCreatedBlock || !yieldProtocol) {
+      // TODO: add popup with error
+      return;
+    }
+
     try {
       // const message = `Hello, ${taskName}`;
       const messageHashBytes = getBytes(keccak256(toUtf8Bytes(message)));
-      const signature = await signMessageAsync({ message: {raw: messageHashBytes} });
+      const signature = await signMessageAsync({ message: { raw: messageHashBytes } });
 
       console.log(`Signing and responding to task ${taskIndex}`);
 
@@ -83,7 +88,7 @@ const RespondToTaskComponent: React.FC = () => {
       >
         Respond to Task
       </StyledButton>
-
+      
     </div>
   );
 };
