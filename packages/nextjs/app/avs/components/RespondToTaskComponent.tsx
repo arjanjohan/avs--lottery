@@ -13,13 +13,16 @@ const RespondToTaskComponent: React.FC = () => {
   const [lotteryAddress, setLotteryAddress] = useState<string>(task.lotteryAddress);
   const [taskIndex, setTaskIndex] = useState<number>(task.taskIndex);
   const [taskCreatedBlock, setTaskCreatedBlock] = useState<number>(task.taskCreatedBlock);
+  const [allowedYieldProtocols, setAllowedYieldProtocols] = useState<string>("");
   const [yieldProtocol, setYieldProtocol] = useState<string>("");
 
   useEffect(() => {
+    console.log("Task:", task);
     setLotteryId(task.lotteryId);
     setLotteryAddress(task.lotteryAddress);
     setTaskIndex(task.taskIndex);
     setTaskCreatedBlock(task.taskCreatedBlock);
+    setAllowedYieldProtocols(task.allowedYieldProtocols);
   }, [task]);
 
   const { chain } = useAccount();
@@ -32,15 +35,19 @@ const RespondToTaskComponent: React.FC = () => {
   const handleRespondToTask = async () => {
     // TODO: check if all fields are filled and throw msg if not
     try {
-      // const message = `Hello, ${taskName}`;
+      const message = yieldProtocol;
       const messageHashBytes = getBytes(keccak256(toUtf8Bytes(message)));
       const signature = await signMessageAsync({ message: {raw: messageHashBytes} });
 
       console.log(`Signing and responding to task ${taskIndex}`);
-
+      console.log("lotteryId:", lotteryId);
+      console.log("lotteryAddres:", lotteryAddress);
+      console.log("allowedYieldProtocols:", allowedYieldProtocols);
+      console.log("taskCreatedBlock:", taskCreatedBlock);
+      
       await respondToTask({
         functionName: "respondToTask",
-        args: [{ name: taskName, taskCreatedBlock: taskCreatedBlock }, taskIndex, signature],
+        args: [{ lotteryId: lotteryId, lotteryAddress: lotteryAddress, allowedYieldProtocols: allowedYieldProtocols, taskCreatedBlock: taskCreatedBlock }, taskIndex, signature],
       });
       console.log("Task responded to successfully");
     } catch (error) {

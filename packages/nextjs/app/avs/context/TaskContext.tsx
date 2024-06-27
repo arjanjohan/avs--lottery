@@ -5,6 +5,7 @@ interface Task {
   lotteryAddress: string;
   yieldProtocol: string;
   taskIndex: number;
+  allowedYieldProtocols: string;
   taskCreatedBlock: number;
 }
 
@@ -20,7 +21,13 @@ interface TaskProviderProps {
 const TaskContext = createContext<TaskContextProps | undefined>(undefined);
 
 export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
-  const [task, setTask] = useState<Task>({ taskName: "", taskIndex: 0, taskCreatedBlock: 0 });
+  const [task, setTask] = useState<Task>({ 
+    lotteryId: 0, 
+    lotteryAddress: "", 
+    yieldProtocol: "", 
+    taskIndex: 0, 
+    allowedYieldProtocols: "abs", 
+    taskCreatedBlock: 0 });
   return <TaskContext.Provider value={{ task, setTask }}>{children}</TaskContext.Provider>;
 };
 

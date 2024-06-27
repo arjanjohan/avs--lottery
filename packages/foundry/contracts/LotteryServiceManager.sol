@@ -75,7 +75,7 @@ contract LotteryServiceManager is
         newTask.taskCreatedBlock = uint32(block.number);
 
         // store hash of task onchain, emit event, and increase taskNum
-        allTaskHashes[latestTaskNum] = keccak256(abi.encode(newTask));
+        allTaskHashes[latestTaskNum] = keccak256(abi.encode(newTask.lotteryAddress));
         emit NewTaskCreated(latestTaskNum, newTask);
         latestTaskNum = latestTaskNum + 1;
     }
@@ -92,7 +92,7 @@ contract LotteryServiceManager is
         );
         // check that the task is valid, hasn't been responsed yet, and is being responded in time
         require(
-            keccak256(abi.encode(task)) ==
+            keccak256(abi.encode(task.lotteryAddress)) ==
                 allTaskHashes[referenceTaskIndex],
             "supplied task does not match the one recorded in the contract"
         );

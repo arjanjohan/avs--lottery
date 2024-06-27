@@ -12,7 +12,7 @@ const EventListenerComponent: React.FC = () => {
   const { setTask } = useTask();
 
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [watchEvents, setWatchEvents] = useState<boolean>(false);
+  const [watchEvents, setWatchEvents] = useState<boolean>(true);
   const [responseStatuses, setResponseStatuses] = useState<{ [key: number]: boolean }>({});
   const ITEMS_PER_PAGE = 5; // This should match the ITEMS_PER_PAGE from the PaginationButton component
 
@@ -54,6 +54,7 @@ const EventListenerComponent: React.FC = () => {
       yieldProtocol: "",
       taskIndex: event.args.taskIndex,
       taskCreatedBlock: event.args.task.taskCreatedBlock,
+      allowedYieldProtocols: event.args.task.allowedYieldProtocols,
     });
   };
 
@@ -63,6 +64,7 @@ const EventListenerComponent: React.FC = () => {
 
   return (
     <div className="w-full max-w-4xl bg-base-200 p-6 rounded-lg shadow-md">
+      {helloWorldServiceManagerContract &&<div>
       {eventsError && <p>Error loading events: {eventsError}</p>}
       {events && events.length > 0 ? (
         <>
@@ -82,7 +84,9 @@ const EventListenerComponent: React.FC = () => {
           />
         </div>
         <PaginationButton currentPage={currentPage} totalItems={totalItems} setCurrentPage={setCurrentPage} />
-      </div>
+        </div>
+        </div>
+      }
     </div>
   );
 };
