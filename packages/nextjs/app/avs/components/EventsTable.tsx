@@ -65,10 +65,10 @@ const EventsTableRow: React.FC<EventsTableRowProps> = ({ event, index, handleAct
   return (
     <tr key={index} className="hover text-sm">
       <td className="w-1/12 md:py-4">{event.args.taskIndex}</td>
-      <td className="w-3/12 md:py-4">{event.args.task.lotteryId}</td>
+      <td className="w-1/12 md:py-4">{event.args.task.lotteryId}</td>
       <td className="w-3/12 md:py-4">{formatAddress(event.args.task.lotteryAddress)}</td>
       <td className="w-1/12 md:py-4">{event.args.task.taskCreatedBlock}</td>
-      <td className="w-2/12 md:py-4">
+      <td className="w-1/12 md:py-4">
         <button className="btn btn-accent btn-sm" onClick={() => handleActionClick(event)} disabled={responseStatus}>
           {responseStatus ? "✅ Responded" : "Respond"}
         </button>
