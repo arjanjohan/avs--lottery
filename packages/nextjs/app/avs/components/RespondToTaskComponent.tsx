@@ -25,7 +25,7 @@ const RespondToTaskComponent: React.FC = () => {
 
   const { chain } = useAccount();
   const { targetNetwork } = useTargetNetwork();
-  const { writeContractAsync: respondToTask, isPending } = useScaffoldWriteContract("HelloWorldServiceManager");
+  const { writeContractAsync: respondToTask, isPending } = useScaffoldWriteContract("LotteryServiceManager");
   const { signMessageAsync } = useSignMessage();
 
   const writeDisabled = !chain || chain?.id !== targetNetwork.id;

@@ -9,7 +9,6 @@ dotenv.config();
 const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
 const operatorWallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
-// const operatorWallet = new ethers.Wallet(process.env.OPERATOR_PRIVATE_KEY!, provider);
 
 const delegationManagerAddress = process.env.DELEGATION_MANAGER_ADDRESS!;
 const contractAddress = process.env.CONTRACT_ADDRESS!;
