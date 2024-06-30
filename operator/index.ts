@@ -23,6 +23,7 @@ const contract = new ethers.Contract(contractAddress, contractABI, wallet);
 const registryContract = new ethers.Contract(stakeRegistryAddress, registryABI, wallet);
 const avsDirectory = new ethers.Contract(avsDirectoryAddress, avsDirectoryABI, operatorWallet);
 
+// Finds a lottery instance by id and returns the yield protocol address used by it
 const getYieldProtocolAddress = async (lotteryId: number) => {
     const url = `https://aptos.devnet.m1.movementlabs.xyz/v1/accounts/${movementLotteryAddress}/resources`;
     try {
@@ -45,7 +46,7 @@ const signAndRespondToTask = async (taskIndex: number, lotteryId: number, lotter
     
     const yieldProtocolAddress = await getYieldProtocolAddress(lotteryId);
     if (!yieldProtocolAddress) {
-        console.error("Yield protocol address not found.");
+        console.error("Yield protocol address not found for lottery.");
         return;
     }
     
@@ -128,9 +129,9 @@ const monitorNewTasks = async () => {
 
 const main = async () => {
     await registerOperator();
-    // monitorNewTasks().catch((error) => {
-    //     console.error("Error monitoring tasks:", error);
-    // });
+    monitorNewTasks().catch((error) => {
+        console.error("Error monitoring tasks:", error);
+    });
 };
 
 main().catch((error) => {
