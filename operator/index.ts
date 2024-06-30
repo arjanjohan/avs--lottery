@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import * as dotenv from "dotenv";
+import axios from "axios";
 import { delegationABI } from "./abis/delegationABI";
 import { contractABI } from './abis/contractABI';
 import { registryABI } from './abis/registryABI';
@@ -15,14 +16,40 @@ const contractAddress = process.env.CONTRACT_ADDRESS!;
 const stakeRegistryAddress = process.env.STAKE_REGISTRY_ADDRESS!;
 const avsDirectoryAddress = process.env.AVS_DIRECTORY_ADDRESS!;
 
+const movementLotteryAddress = process.env.MOVEMENT_LOTTERY_ADDRESS!;
+
 const delegationManager = new ethers.Contract(delegationManagerAddress, delegationABI, operatorWallet);
 const contract = new ethers.Contract(contractAddress, contractABI, wallet);
 const registryContract = new ethers.Contract(stakeRegistryAddress, registryABI, wallet);
 const avsDirectory = new ethers.Contract(avsDirectoryAddress, avsDirectoryABI, operatorWallet);
 
-const signAndRespondToTask = async (taskIndex: number, taskCreatedBlock: number, taskName: string) => {
-    const message = `Hello, ${taskName}`;
-    const messageHash = ethers.utils.solidityKeccak256(["string"], [message]);
+const getYieldProtocolAddress = async (lotteryId: number) => {
+    const url = `https://aptos.devnet.m1.movementlabs.xyz/v1/accounts/${movementLotteryAddress}/resources`;
+    try {
+        const response = await axios.get(url);
+        const lotteriesManager = response.data.find((item: any) => item.type.includes("lottery::LotteriesManager"));
+        if (lotteriesManager) {
+            const lottery = lotteriesManager.data.lotteries.data.find((item: any) => item.key == lotteryId.toString());
+            if (lottery) {
+                // Return the yield protocol address used by this lottery
+                return lottery.value.yield_protocol_addr;
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching lottery creator address:", error);
+    }
+    return null;
+};
+
+const signAndRespondToTask = async (taskIndex: number, lotteryId: number, lotteryAddress: string, allowedYieldProtocols: string[], taskCreatedBlock: number) => {
+    
+    const yieldProtocolAddress = await getYieldProtocolAddress(lotteryId);
+    if (!yieldProtocolAddress) {
+        console.error("Yield protocol address not found.");
+        return;
+    }
+    
+    const messageHash = ethers.utils.solidityKeccak256(["string"], [yieldProtocolAddress]);
     const messageBytes = ethers.utils.arrayify(messageHash);
     const signature = await operatorWallet.signMessage(messageBytes);
 
@@ -31,7 +58,12 @@ const signAndRespondToTask = async (taskIndex: number, taskCreatedBlock: number,
     )
 
     const tx = await contract.respondToTask(
-        { name: taskName, taskCreatedBlock: taskCreatedBlock },
+        { 
+            lotteryId: lotteryId, 
+            lotteryAddress: lotteryAddress,
+            allowedYieldProtocols: allowedYieldProtocols,
+            taskCreatedBlock: taskCreatedBlock
+        },
         taskIndex,
         signature
     );
@@ -87,8 +119,8 @@ const monitorNewTasks = async () => {
     await contract.createNewTask("EigenWorld");
 
     contract.on("NewTaskCreated", async (taskIndex: number, task: any) => {
-        console.log(`New task detected: Hello, ${task.name}`);
-        await signAndRespondToTask(taskIndex, task.taskCreatedBlock, task.name);
+        console.log(`New task detected with id, ${task.lotteryId} for lottery address ${task.lotteryAddress}`);
+        await signAndRespondToTask(taskIndex, task.lotteryId, task.lotteryAddress, task.allowedYieldProtocols, task.taskCreatedBlock);
     });
 
     console.log("Monitoring for new tasks...");
